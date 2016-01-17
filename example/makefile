@@ -1,13 +1,27 @@
-
+CC=gcc
+CFLAGS=-g -Wall -ljson-c
 INCLUDE = /usr/include/json-c
 
-example:
-	gcc -I$(INCLUDE) example.c -o example -ljson-c
+.PHONY:all
+all:example test
 
-test:
-	gcc -I$(INCLUDE) test.c -o test -ljson-c
+example:example.o
+	$(CC) $(CFLAGS) -I$(INCLUDE) example.o -o example
 
+example.o:example.c
+
+test:test.o
+	$(CC) $(CFLAGS) -I$(INCLUDE) test.o -o test
+
+test.o:test.c
+
+help:
+	@echo "... all(example/test)"
+	@echo "... example"
+	@echo "... test"
+
+.PHONY:clean
 clean:
-	rm -rf *.o
-	rm -rf example
-	rm -rf test
+	-rm -f *.o
+	-rm -f example
+	-rm -f test

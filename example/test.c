@@ -5,8 +5,8 @@
 #include <malloc.h>
 #include <stdbool.h>
 
-#include "json.h"
-#include "json_tokener.h"
+#include "json-c/json.h"
+#include "json-c/json_tokener.h"
 
 struct ip_node {
     char   *addr;
@@ -85,8 +85,6 @@ json_bool fill_int_field_in_node(struct json_object *node_jobj_ptr, int *int_fie
 
 int get_unit_struct(struct  json_object *unit_jobj)
 {
-    int array_len = 0;
-    int index = 0;
     struct unit_node unit ;
 	struct json_object *if_jobj = NULL;
 	struct json_object *ip_jobj = NULL;
@@ -95,14 +93,14 @@ int get_unit_struct(struct  json_object *unit_jobj)
 	fill_str_field_in_node(unit_jobj, &unit.name, (char *)UNIT_NAME);
 	fill_int_field_in_node(unit_jobj, &unit.index, (char *)UNIT_INDEX);
 
-    if(res = json_object_object_get_ex(unit_jobj, (char *)INTERFACE, &if_jobj)) {
+    if (true == (res = json_object_object_get_ex(unit_jobj, (char *)INTERFACE, &if_jobj))) {
     	fill_str_field_in_node(if_jobj, &unit.ipif.name, (char *)IF_NAME);
    		fill_str_field_in_node(if_jobj, &unit.ipif.state, (char *)IF_STATE);
 	    fill_int_field_in_node(if_jobj, &unit.ipif.mtu, (char *)IF_MTU);
 	}
 
 	
-	if(res = json_object_object_get_ex(if_jobj, (char *)IP, &ip_jobj)) {
+	if (true == (res = json_object_object_get_ex(if_jobj, (char *)IP, &ip_jobj))) {
 		fill_str_field_in_node(ip_jobj, &unit.ipif.ipaddr.addr, (char *)IP_ADDR);
 	    fill_int_field_in_node(ip_jobj, &unit.ipif.ipaddr.mask, (char *)IP_MASK);
 	}
@@ -118,18 +116,14 @@ int get_unit_struct(struct  json_object *unit_jobj)
 
 int main(int argc, char** argv)
 {
-	struct json_tokener *tok;
-	struct json_object  *json_str = NULL;
-	struct json_object  *new_obj = NULL;
-	struct json_object  *state_obj = NULL;
-	int     str_len = 0;
-	char * state = NULL;
-	char * test_str1 = (char*)"{\"state\":\"WO-EX\",\"index\":1}";
+    //int str_len = 0;
+	json_object *new_obj = NULL;
+	//char * test_str1 = (char*)"{\"state\":\"WO-EX\",\"index\":1}";
 	printf("json to C test \n");
 	printf("json string:%s \n \n \n", gisu_json_str);
 		
 	
-	str_len = strlen(gisu_json_str);
+	//str_len = strlen(gisu_json_str);
 	new_obj = json_tokener_parse(gisu_json_str);	
     //state_obj = json_object_object_get(new_obj, UNIT_STATE);	
 	//state = (char*) json_object_get_string(state_obj);

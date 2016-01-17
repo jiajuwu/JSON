@@ -3,9 +3,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "json.h"
-#include "json_tokener.h"
-
+#include "json-c/json.h"
+#include "json-c/json_tokener.h"
 
 typedef unsigned int word;
 typedef unsigned char byte;
@@ -38,8 +37,9 @@ int main(int argc, char **argv)
 	printf("      prev_record    :  %d \n",ganfil.prev_record);
 	printf("      prev_element   :  %d \n",ganfil.prev_element);
 	printf("      this_rec_type  :  %d \n",ganfil.this_rec_type);
-}
 
+    return 0;
+}
 
 json_bool fill_int_field_in_node(struct json_object *node_jobj_ptr, int *int_field, char *field_name)
 {
@@ -53,7 +53,6 @@ json_bool fill_int_field_in_node(struct json_object *node_jobj_ptr, int *int_fie
 
     return res;
 }
-
 
 json_bool fill_data_in_array(json_object *json_jobj, int *int_field, char *field_name)
 {
@@ -73,17 +72,11 @@ json_bool fill_data_in_array(json_object *json_jobj, int *int_field, char *field
 	return res;
 }
 
-
 json_bool get_ganfil_t_struct(json_object *json_jobj, ganfil_t *ganfil)
 {
 	json_bool res = false;
-	json_object *new_jobj = NULL;
-	json_object *array_jobj = NULL;
-	int prev_record = 0;
-	int array_len = 0;
-    int index = 0;
-
 	struct json_object *prev_jobj = NULL;
+
 	if ((res = json_object_object_get_ex(json_jobj, (char*)"ganfil", &prev_jobj))) {
 		fill_int_field_in_node(prev_jobj, (int*)&ganfil->prev_record, (char *)"prev_record");
 		fill_int_field_in_node(prev_jobj, (int*)&ganfil->prev_element, (char *)"prev_element");
@@ -92,8 +85,4 @@ json_bool get_ganfil_t_struct(json_object *json_jobj, ganfil_t *ganfil)
 	}
 	return res;
 }
-
-
-
-
 

@@ -37,7 +37,7 @@ json_bool fill_int_field_in_node(json_object *node_json_obj, int *int_field, cha
     json_object *new_json_object = NULL;
     json_bool result = false;
 
-    if (result = json_object_object_get_ex(node_json_obj, field_name, &new_json_object))
+    if (true == (result = json_object_object_get_ex(node_json_obj, field_name, &new_json_object)))
     {
         *int_field = json_object_get_int(new_json_object);
     }
@@ -50,7 +50,7 @@ json_bool get_indicator_struct(json_object *prev_obj, gaifil_t *gaifil)
     json_object *indicator_obj = NULL;
     json_bool result = false;
 
-    if (result = json_object_object_get_ex(prev_obj, (char *)"indicator", &indicator_obj)) {
+    if (true == (result = json_object_object_get_ex(prev_obj, (char *)"indicator", &indicator_obj))) {
         fill_int_field_in_node(indicator_obj, (int *)&(gaifil->indicator.ctn_in_ganfil), (char *)"ctn_in_ganfil");
         fill_int_field_in_node(indicator_obj, (int *)&(gaifil->indicator.ctn_in_reserved), (char *)"ctn_in_reserved");
         fill_int_field_in_node(indicator_obj, (int *)&(gaifil->indicator.result_in_gtr), (char *)"result_in_gtr");
@@ -63,10 +63,9 @@ json_bool get_indicator_struct(json_object *prev_obj, gaifil_t *gaifil)
 json_bool get_gaifil_t_struct(json_object *gaifil_obj, gaifil_t *gaifil)
 {
     json_object *prev_obj = NULL;
-    json_object *indicator_obj = NULL;
     json_bool result = false;
 
-    if (result = json_object_object_get_ex(gaifil_obj, (char *)"gaifil", &prev_obj)) {
+    if (true == (result = json_object_object_get_ex(gaifil_obj, (char *)"gaifil", &prev_obj))) {
         fill_int_field_in_node(prev_obj, (int *)&gaifil->continue_index, (char *)"continue_index");
         fill_int_field_in_node(prev_obj, (int *)&gaifil->result_index, (char *)"result_index");
         get_indicator_struct(prev_obj, gaifil);
