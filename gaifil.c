@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <json-c/json.h>
 #include <json-c/json_tokener.h>
+#include <hiredis/hiredis.h>
 
 typedef unsigned short word;
 typedef unsigned char byte;
@@ -30,7 +31,7 @@ typedef struct  {
     word  reserve ;
 }  gaifil_t ;
 
-char *gaifil_json = "{\"gaifil\":{\"continue_index\":1,\"result_index\":2,\"indicator\":{\"ctn_in_ganfil\":3,\"ctn_in_reserved\":4,\"result_in_gtr\":5,\"reserve\":6,\"record_in_use\":7,},\"prev_element\":8,\"prev_record\":9,\"gan_link_count\":10,\"reserve\":11}}";
+//char *gaifil_json = "{\"gaifil\":{\"continue_index\":1,\"result_index\":2,\"indicator\":{\"ctn_in_ganfil\":3,\"ctn_in_reserved\":4,\"result_in_gtr\":5,\"reserve\":6,\"record_in_use\":7,},\"prev_element\":8,\"prev_record\":9,\"gan_link_count\":10,\"reserve\":11}}";
 
 json_bool fill_int_field_in_node(json_object *node_json_obj, int *int_field, char *field_name)
 {
@@ -77,11 +78,38 @@ json_bool get_gaifil_t_struct(json_object *gaifil_obj, gaifil_t *gaifil)
     return result;
 }
 
+void get_redis(char *result)
+{
+    int timeout = 1000;
+    struct timeval tv;
+    tv.tv_sec = timeout / 1000;
+    tv.tv_usec = timeout * 1000;
+    redisContext* c = redisConnectWithTimeout("127.0.0.1", 6379, tv);
+    if (c->err) {
+        redisFree(c);
+        return;
+    }
+
+    //const char* command1 = "set stest1 value1";
+    redisReply* r = (redisReply*)redisCommand(c, "get gaifil");
+    if (NULL == r) {
+        redisFree(c);
+        return;
+    }
+
+    memcpy(result, r->str, r->len);
+    freeReplyObject(r);
+    redisFree(c);
+    return;
+}
+
 int main(int argc, char *argv[])
 {
     struct json_object *new_obj = NULL;
     gaifil_t gaifil;
+    char gaifil_json[1024];
 
+    get_redis(gaifil_json);
     new_obj = json_tokener_parse(gaifil_json);
     get_gaifil_t_struct(new_obj, &gaifil);
     printf("gaifil:\n");
